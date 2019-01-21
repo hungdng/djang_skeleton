@@ -1,10 +1,12 @@
-from rest_framework import generics, mixins, status, viewsets
+from rest_framework import generics, mixins, status, viewsets, permissions
 from rest_framework.exceptions import NotFound
 # from rest_framework.permissions import (
 #     AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 # )
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 
 from .models import Article
 from .serializers import ArticleSerializer
@@ -20,6 +22,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         return queryset
+
+    # def get_permissions(self):
+    #     return (permissions.IsAuthenticated(),)
+
+    @method_decorator(cache_page(60))
+    def dispatch(self, *args, **kwargs):
+        return super(ArticleViewSet, self).dispatch(*args, **kwargs)
 
     def create(self, request):
         serializer_context = {

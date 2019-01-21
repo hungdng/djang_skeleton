@@ -27,8 +27,5 @@ class Article(TimestampedModel):
     objects = models.Manager()
     sorted_objects = ArticleQuerySet.as_manager()
 
-    def __unicode__(self):
-        return self.description
-
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return self.description

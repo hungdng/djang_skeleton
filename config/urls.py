@@ -27,7 +27,7 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
-    path(settings.ADMIN_URL, admin.site.urls),
+    path('admin/', admin.site.urls),
     url(r'^api/', include('blog.articles.urls')),
     url(r'^$', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
