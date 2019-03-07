@@ -60,7 +60,8 @@ THIRD_PARTY_APPS = [
 # Apps specific for this project go here.
 LOCAL_APPS = [
     # custom users app
-    'blog.articles',
+    'blog.authentication',
+    'blog.profiles',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -173,16 +174,23 @@ MEDIA_ROOT = str(APPS_DIR('media'))
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
 MEDIA_URL = '/media/'
 
+# Tell Django about the custom `User` model we created. The string
+# `authentication.User` tells Django we are referring to the `User` model in
+# the `authentication` module. This module is registered above in a setting
+# called `INSTALLED_APPS`.
+AUTH_USER_MODEL = 'authentication.User'
 
 # Your common stuff: Below this line define 3rd party library settings
 # ------------------------------------------------------------------------------
 
 REST_FRAMEWORK = {
+    'NON_FIELD_ERRORS_KEY': 'error',
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework.authentication.TokenAuthentication',
+        'blog.authentication.JwtAuth.JWTAuthentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'core.utils.api.renderers.CamelCaseJSONRenderer',
