@@ -18,20 +18,25 @@ Including another URLconf
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from django.urls import path
+# from django.urls import path
 from django.conf import settings
 from django.conf.urls import url
-from django.urls import include, path
+# from django.urls import include, path
 from django.conf.urls.static import static
 from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='Pastebin API')
 
+from django.contrib import admin
+from django.urls import include, path
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('blog.authentication.urls')),
-    # url(r'^api/', include('blog.profiles.urls')),
-    url(r'^$', schema_view),
+    # url(r'^api/', include('blog.authentication.urls')),
+    # url(r'^$', schema_view),
+    path('', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
@@ -41,5 +46,7 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns += [
-            url(r'^__debug__/', include(debug_toolbar.urls)),
+            # url(r'^__debug__/', include(debug_toolbar.urls)),
+            path('__debug__/', include(debug_toolbar.urls)),
+
         ]

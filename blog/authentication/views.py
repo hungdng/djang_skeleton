@@ -7,13 +7,15 @@ from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer
 )
 
+from .models import User
 
-class RegistrationAPIView(APIView):
+
+class RegistrationAPIView(viewsets.GenericViewSet):
     permission_classes = (AllowAny,)
     serializer_class = RegistrationSerializer
 
-    def post(self, request):
-        user = request.data.get('user', {})
+    def create_user(self, request):
+        user = request.data
 
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
@@ -22,7 +24,7 @@ class RegistrationAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LoginAPIView(APIView):
+class LoginAPIView(viewsets.GenericViewSet):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
@@ -35,11 +37,12 @@ class LoginAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    permission_classes = (IsAuthenticated,)
+class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.GenericViewSet):
+    # permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
+    queryset = User.objects.all()
 
-    def update(self, request, *args, **kwargs):
+    def partial_update(self, request, *args, **kwargs):
         user_data = request.data.get('user', {})
 
         serializer_data = {
