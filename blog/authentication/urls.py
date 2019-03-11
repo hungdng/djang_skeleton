@@ -6,17 +6,15 @@ from rest_framework_nested.routers import (
 )
 
 from .views import (
-    LoginAPIView, RegistrationAPIView, UserViewSet
+    LoginViewSet, RegistrationViewSet
 )
-
-# from .views import (UserViewSet)
 
 router = SimpleRouter(trailing_slash=False)
 # router.register(r'user', UserViewSet, 'user')
 
 urlpatterns = [
     # path('', include(router.urls)),
-    path('registration', RegistrationAPIView.as_view(
+    path('registration', RegistrationViewSet.as_view(
         {'post': 'create_user'}), name='registration'),
-    # url(r'^users/login/?$', LoginAPIView.as_view()),
+    path('login', LoginViewSet.as_view({'post': 'login'}), name='login'),
 ]

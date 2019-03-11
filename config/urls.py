@@ -33,8 +33,8 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('blog.authentication.urls')),
-    # url(r'^api/', include('blog.authentication.urls')),
+    path('api/users/', include('blog.authentication.urls')),
+    url(r'^api/profiles/', include('blog.profiles.urls')),
     # url(r'^$', schema_view),
     path('', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -46,7 +46,6 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns += [
-            # url(r'^__debug__/', include(debug_toolbar.urls)),
-            path('__debug__/', include(debug_toolbar.urls)),
-
+            url(r'^__debug__/', include(debug_toolbar.urls)),
+            # path('__debug__/', include(debug_toolbar.urls)),
         ]
