@@ -5,16 +5,14 @@ from rest_framework_nested.routers import (
     SimpleRouter
 )
 
-from .views import (
-    LoginViewSet, RegistrationViewSet
-)
+from .views import UserViewSet
 
 router = SimpleRouter(trailing_slash=False)
-# router.register(r'user', UserViewSet, 'user')
+router.register(r'', UserViewSet)
 
 urlpatterns = [
-    # path('', include(router.urls)),
-    path('registration', RegistrationViewSet.as_view(
-        {'post': 'create_user'}), name='registration'),
-    path('login', LoginViewSet.as_view({'post': 'login'}), name='login'),
+    path('', include(router.urls)),
+    # path('registration', RegistrationViewSet.as_view(
+    #     {'post': 'create_user'}), name='registration'),
+    # path('login', LoginViewSet.as_view({'post': 'login'}), name='login'),
 ]

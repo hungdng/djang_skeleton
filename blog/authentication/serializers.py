@@ -80,11 +80,11 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'email', 'username', 'password', 'token', 'profile', 'bio', 'id',
+            'email', 'username', 'password', 'token', 'profile', 'bio',
             'image',
         )
 
-        read_only_fields = ('token',)
+        read_only_fields = ('token', 'email')
 
     def update(self, instance, validated_data):
         """Performs an update on a User."""
@@ -93,6 +93,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         profile_data = validated_data.pop('profile', {})
 
+        # Update user
         for (key, value) in validated_data.items():
             setattr(instance, key, value)
 
@@ -100,6 +101,7 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
 
+        # Update Profile
         for (key, value) in profile_data.items():
             setattr(instance.profile, key, value)
 
