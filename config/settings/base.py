@@ -62,6 +62,7 @@ LOCAL_APPS = [
     # custom users app
     'blog.authentication',
     'blog.profiles',
+    'blog.articles',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -76,7 +77,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'core.middleware.WhodidMiddleware',
+    # 'core.middleware.WhodidMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

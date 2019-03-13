@@ -3,23 +3,35 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer
+    LoginSerializer, RegistrationSerializer, UserSerializer, UserSerializerRetrieve
 )
 
 from rest_framework.decorators import action
 from .models import User
+from blog.profiles.models import Profile
+from rest_framework.exceptions import NotFound
+from .Permissions import IsUserPermission, IsAdminPermission
 
 
-class UserViewSet(viewsets.GenericViewSet):
-    permission_classes = (AllowAny,)
+class UserViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin):
+    permission_classes = (IsAuthenticated,)
     serializer_class = UserSerializer
     queryset = User.objects.select_related('profile')
 
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'retrieve' or self.action == 'partial_update':
+            permission_classes = [IsAdminPermission, ]
+        elif self.action == 'login' or self.action == 'create_user':
+            permission_classes = [AllowAny, ]
+        else:
+            permission_classes = [IsUserPermission, ]
+        return [permission() for permission in permission_classes]
+
     def get_serializer_class(self):
-        if self.action == 'login':
-            return LoginSerializer
-        if self.action == 'create_user':
-            return RegistrationSerializer
+        if self.action == 'list':
+            return UserSerializer
+        if self.action == 'retrieve':
+            return UserSerializerRetrieve
         return super().get_serializer_class()
 
     @action(detail=False, methods=['post'], url_path='login')
@@ -42,21 +54,32 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
-        user_data = request.data
+        user = self.get_object()
+        return Response(self.update_user(request.data, user), status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=['get'], url_path='me')
+    def get_me(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @get_me.mapping.put
+    def update_me(self, request, *args, **kwargs):
+        return Response(self.update_user(request.data, request.user), status=status.HTTP_200_OK)
+
+    # Function Update user
+    def update_user(self, user_data, user):
         serializer_data = {
-            'username': user_data.get('username', request.user.username),
+            'username': user_data.get('username', user.username),
             'password': user_data.get('password', None),
             'profile': {
-                'bio': user_data.get('bio', request.user.profile.bio),
-                'image': user_data.get('image', request.user.profile.image)
+                'bio': user_data.get('bio', user.profile.bio),
+                'image': user_data.get('image', user.profile.image)
             }
         }
 
-        serializer = self.serializer_class(
-            request.user, data=serializer_data, partial=True
+        serializer = UserSerializer(
+            user, data=serializer_data, partial=True,
         )
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return serializer.data

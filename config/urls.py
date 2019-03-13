@@ -34,7 +34,8 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/users/', include('blog.authentication.urls')),
-    path('api/profiles/', include('blog.profiles.urls')),
+    path('api/', include('blog.profiles.urls')),
+    path('api/', include('blog.articles.urls')),
     # url(r'^$', schema_view),
     path('', schema_view),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -80,7 +80,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'email', 'username', 'password', 'token', 'profile', 'bio',
+            'email', 'username', 'password', 'profile', 'bio',
             'image',
         )
 
@@ -108,3 +108,16 @@ class UserSerializer(serializers.ModelSerializer):
         instance.profile.save()
 
         return instance
+
+
+class UserSerializerRetrieve(serializers.ModelSerializer):
+    profile = ProfileSerializer(write_only=True)
+
+    bio = serializers.CharField(source='profile.bio', read_only=True)
+    image = serializers.CharField(source='profile.image', read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            'email', 'username', 'profile', 'bio', 'image',
+        )
