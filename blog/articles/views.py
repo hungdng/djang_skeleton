@@ -9,19 +9,26 @@ from rest_framework.permissions import (
 from rest_framework.response import Response
 from .models import Article, Tag
 from .serializers import ArticleSerializer, TagSerializer
+from django.db.models import Prefetch
 
 
 class ArticleViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     lookup_field = 'slug'
-    queryset = Article.objects.select_related('author', 'author__user')
+    queryset = Article.objects.prefetch_related('author', 'author__user')
     permission_classes = (AllowAny,)
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        if self.action == 'retrieve':
-            return super().get_queryset()
-        else:
-            return super().get_queryset()
+        queryset = self.queryset
+
+        author = self.request.query_params.get('author', None)
+        if author is not None:
+            queryset = queryset.filter(author__user__username=author)
+
+        tag = self.request.query_params.get('tag', None)
+        if tag is not None:
+            queryset = queryset.filter(tags__tag=tag)
+        return queryset
 
     def create(self, request, *args, **kwargs):
         serializer_context = {

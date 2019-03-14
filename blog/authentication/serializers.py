@@ -69,7 +69,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
         max_length=128,
         min_length=8,
-        write_only=True
+        write_only=False, required=False
     )
 
     profile = ProfileSerializer(write_only=True)

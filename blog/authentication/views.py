@@ -19,7 +19,7 @@ class UserViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
     queryset = User.objects.select_related('profile')
 
     def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve' or self.action == 'partial_update':
+        if self.action == 'list' or self.action == 'retrieve' or self.action == 'partial_update' or self.action == 'get_me' or self.action == 'update_me':
             permission_classes = [IsAdminPermission, ]
         elif self.action == 'login' or self.action == 'create_user':
             permission_classes = [AllowAny, ]
@@ -59,7 +59,10 @@ class UserViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
 
     @action(detail=False, methods=['get'], url_path='me')
     def get_me(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
+        # return super().retrieve(request, *args, **kwargs)
+
+        serializer = self.serializer_class(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @get_me.mapping.put
     def update_me(self, request, *args, **kwargs):

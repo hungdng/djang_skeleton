@@ -54,7 +54,7 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 # Apps specific for this project go here.
@@ -206,4 +206,17 @@ REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'core.middleware.core_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'core.pagination.CustomPagination.CustomPagination',
     'PAGE_SIZE': 5
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        },
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
