@@ -36,13 +36,11 @@ class LoginSerializer(serializers.Serializer):
         password = data.get('password', None)
         if email is None:
             raise serializers.ValidationError(
-                'An email address is required to log in.'
-            )
+                'An email address is required to log in.')
 
         if password is None:
             raise serializers.ValidationError(
-                'A password is required to log in.'
-            )
+                'A password is required to log in.')
 
         user = authenticate(username=email, password=password)
 

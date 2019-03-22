@@ -81,3 +81,8 @@ class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     queryset = Tag.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = TagSerializer
+
+# class TagViewSet(viewsets.ModelViewSet):
+#     queryset = Tag.objects.all()
+#     permission_classes = (AllowAny,)
+#     serializer_class = TagSerializer

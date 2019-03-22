@@ -10,6 +10,6 @@ router_tags = routers.SimpleRouter(trailing_slash=False)
 router_tags.register(r'', TagViewSet,)
 
 urlpatterns = [
-    path('articles', include(router.urls)),
-    path('tags', include(router_tags.urls)),
+    path('articles/', include(router.urls)),
+    path('tags/', include(router_tags.urls)),
 ]

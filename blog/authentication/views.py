@@ -19,7 +19,7 @@ class UserViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.Lis
     queryset = User.objects.select_related('profile')
 
     def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve' or self.action == 'partial_update' or self.action == 'get_me' or self.action == 'update_me':
+        if self.action == 'list' or self.action == 'retrieve' or self.action == 'partial_update':
             permission_classes = [IsAdminPermission, ]
         elif self.action == 'login' or self.action == 'create_user':
             permission_classes = [AllowAny, ]
